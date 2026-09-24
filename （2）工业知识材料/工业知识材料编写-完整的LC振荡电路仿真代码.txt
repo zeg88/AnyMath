@@ -1,0 +1,32 @@
+# LC振荡电路仿真 - 显式欧拉法
+# 参数设置
+C = 1.0      # 电容 (F)
+L = 1.0      # 电感 (H)
+U0 = 1.0     # 初始电压 (V)
+I0 = 0.0     # 初始电流 (A)
+T = 100.0    # 仿真总时长 (s)
+n = 1000     # 步数
+h = T / n    # 步长
+
+# 初始化数组
+t = range(0, T, length=n+1)
+U = zeros(n+1)
+I = zeros(n+1)
+
+# 初始条件
+U[1] = U0
+I[1] = I0
+
+# 欧拉法迭代 (使用状态方程: dU/dt = -I/C, dI/dt = U/L)
+for i in 1:n
+    U[i+1] = U[i] + h * (-I[i] / C)
+    I[i+1] = I[i] + h * (U[i] / L)
+end
+
+# 绘制结果
+using Plots
+plot(t, U, label="电压 U(t)", xlabel="时间 (s)", ylabel="电压 / 电流", lw=2, color=:red, linestyle=:dash)
+plot!(t, I, label="电流 I(t)", lw=2, color=:blue, linestyle=:solid)
+title!("LC振荡电路 (无阻尼)")
+savefig("LC_oscillation.png")   # 保存图片
+display(plot!)                   # 显示图形
